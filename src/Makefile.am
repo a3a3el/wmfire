@@ -14,5 +14,5 @@ wmfire_LDADD = @LDFLAGS@
 AM_LDFLAGS = -lXext -lX11 \
 	-L/usr/X11R6/lib -L/usr/local/lib
 
-INCLUDES = -I/usr/X11R6/include \
+AM_CPPFLAGS = -I/usr/X11R6/include \
 	-I/usr/local/include
