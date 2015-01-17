@@ -365,7 +365,8 @@ update_file()
 	/* First number only. Complex parsing should be done in */
 	/* external program and value saved to monitored file.  */
 
-	fgets(buf, sizeof (buf), fp);
+	if (fgets(buf, sizeof (buf), fp) == NULL)
+		fprintf(stderr, "warning: file '%s' is empty\n", file_name);
 	number = atof(buf);
 	fclose(fp);
 
