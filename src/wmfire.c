@@ -111,7 +111,7 @@ int change_cpu(int);
 void change_flame(int);
 GdkCursor *setup_cursor();
 void burn_spot(int, int, int);
-inline void draw_fire(unsigned int);
+void draw_fire(unsigned int);
 static void make_wmfire_dockapp();
 void read_config(int, char **);
 void do_help(void);
@@ -504,7 +504,7 @@ void burn_spot(int x, int y, int c)
 /* Draw fire                              */
 /******************************************/
 
-inline void
+void
 draw_fire(unsigned int load)
 {
 	int x, y, i, j;
