@@ -103,18 +103,18 @@ typedef struct {
 /* Functions                              */
 /******************************************/
 
-int update_cpu();
-int update_mem();
-int update_net();
-int update_file();
-int change_cpu(int);
-void change_flame(int);
-GdkCursor *setup_cursor();
-void burn_spot(int, int, int);
-void draw_fire(unsigned int);
+static int update_cpu();
+static int update_mem();
+static int update_net();
+static int update_file();
+static int change_cpu(int);
+static void change_flame(int);
+static GdkCursor *setup_cursor();
+static void burn_spot(int, int, int);
+static void draw_fire(unsigned int);
 static void make_wmfire_dockapp();
-void read_config(int, char **);
-void do_help(void);
+static void read_config(int, char **);
+static void do_help(void);
 
 /******************************************/
 /* Globals                                */
@@ -274,7 +274,7 @@ main(int argc, char **argv)
 /* Update cpu load statistics             */
 /******************************************/
 
-int
+static int
 update_cpu()
 {
 	glibtop_cpu cpu;
@@ -315,7 +315,7 @@ update_cpu()
 /* Update memory statistics               */
 /******************************************/
 
-int
+static int
 update_mem()
 {
 	glibtop_mem mem;
@@ -356,7 +356,7 @@ getsysctl(const char *name, void *ptr, size_t len)
 }
 #endif
 
-int
+static int
 update_net()
 {
 	int percent;
@@ -390,7 +390,7 @@ update_net()
 /* Update file statistics                 */
 /******************************************/
 
-int
+static int
 update_file()
 {
 	char buf[128];
@@ -417,7 +417,7 @@ update_file()
 /* Change CPU monitor                     */
 /******************************************/
 
-int
+static int
 change_cpu(int which)
 {
 	glibtop_cpu cpu;
@@ -447,7 +447,7 @@ change_cpu(int which)
 /* Change flame effect                    */
 /******************************************/
 
-void
+static void
 change_flame(int which)
 {
 	if (which > 0 && which <= NFLAMES)
@@ -464,7 +464,7 @@ change_flame(int which)
 /* Setup invisible cursor                 */
 /******************************************/
 
-GdkCursor *
+static GdkCursor *
 setup_cursor()
 {
 	GdkPixmap *source, *mask;
@@ -490,7 +490,8 @@ setup_cursor()
 /* Burn spot                              */
 /******************************************/
 
-void burn_spot(int x, int y, int c)
+static void
+burn_spot(int x, int y, int c)
 {
 	int i;
 
@@ -504,7 +505,7 @@ void burn_spot(int x, int y, int c)
 /* Draw fire                              */
 /******************************************/
 
-void
+static void
 draw_fire(unsigned int load)
 {
 	int x, y, i, j;
@@ -662,7 +663,7 @@ make_wmfire_dockapp(void)
 /* Read config file                       */
 /******************************************/
 
-void
+static void
 read_config(int argc, char **argv)
 {
 	int i, j;
@@ -762,7 +763,7 @@ read_config(int argc, char **argv)
 /* Help                                   */
 /******************************************/
 
-void
+static void
 do_help(void)
 {
 	int i;
