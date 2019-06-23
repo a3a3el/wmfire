@@ -770,7 +770,7 @@ do_help(void)
 
 	fprintf(stderr, "\nWmfire - Flaming Monitor Dock V %s\n\n", VERSION);
 	fprintf(stderr, "Usage: wmfire [ options... ]\n\n");
-	fprintf(stderr, "\t-g [{+-}X{+-}Y]\t\tinital window position\n");
+	fprintf(stderr, "\t-g [{+-}X{+-}Y]\t\tinitial window position\n");
 	fprintf(stderr, "\t-y\t\t\tset window sticky\n");
 	fprintf(stderr, "\t-c [0..%d]\t\tmonitor smp cpu X\n", GLIBTOP_NCPU-1);
 	fprintf(stderr, "\t-m\t\t\tmonitor memory load\n");
@@ -780,7 +780,7 @@ do_help(void)
 	fprintf(stderr, "\t-s [...]\t\tchange network speed (ppp:%dK) (eth:%dM)\n", NET_SPD_PPP, NET_SPD_ETH);
 	fprintf(stderr, "\t-x\t\t\texclude nice'd cpu load\n");
 	fprintf(stderr, "\t-H [...]\t\tset file maximum (high) value\n");
-	fprintf(stderr, "\t-L [...]\t\tset file minumum (low) value\n");
+	fprintf(stderr, "\t-L [...]\t\tset file minimum (low) value\n");
 	fprintf(stderr, "\t-p\t\t\tfire effect only\n");
 	fprintf(stderr, "\t-f [1..%d]\t\tchange flame colour\n\t\t\t\t", NFLAMES);
 	for (i = 0; i < NFLAMES; i++)
