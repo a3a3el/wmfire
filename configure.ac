@@ -33,16 +33,14 @@ if test "x$session" = "xon" ; then
 fi
 AM_CONDITIONAL(SESSION, test "x$session" = "xon")
 
-AC_PATH_PROG(config, pkg-config)
+PKG_CHECK_MODULES([GTK2],[gtk+-2.0],[
+  GTK2_LIBS=`echo "$GTK2_LIBS" | sed -e "s/-lgtk-x11-2.0//g" -e "s/-latk-1.0//g"`
+])
 
-AC_CACHE_CHECK([for gdk2 includes], ac_cv_cflags_GDKINCS, [GDKINCS=`$config --cflags gtk+-2.0`])
-AC_CACHE_CHECK([for gdk2 libs], ac_cv_ldflags_GDKLIBS, [GDKLIBS=`$config --libs gtk+-2.0 | sed -e "s/-lgtk-x11-2.0//g" -e "s/-latk-1.0//g"`])
+PKG_CHECK_MODULES([GTOP],[libgtop-2.0])
 
-AC_CACHE_CHECK([for libgtop2 includes], ac_cv_cflags_GTOPINCS, [GTOPINCS=`$config --cflags libgtop-2.0`])
-AC_CACHE_CHECK([for libgtop2 libs], ac_cv_ldflags_GTOPLIBS, [GTOPLIBS=`$config --libs libgtop-2.0`])
-
-CFLAGS="$CFLAGS $GDKINCS $GTOPINCS"
-LDFLAGS="$LDFLAGS $GDKLIBS $GTOPLIBS"
+CFLAGS="$CFLAGS $GTK2_CFLAGS $GTOP_CFLAGS"
+LDFLAGS="$LDFLAGS $GTK2_LIBS $GTOP_LIBS"
 
 AC_CHECK_FUNCS(strstr)
 
