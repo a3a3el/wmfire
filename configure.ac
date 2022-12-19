@@ -13,7 +13,6 @@ AC_CHECK_LIB(Xext, main)
 AC_CHECK_LIB(m,sincos)
 
 AC_HEADER_DIRENT
-AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS(unistd.h)
 
@@ -44,4 +43,5 @@ LDFLAGS="$LDFLAGS $GTK2_LIBS $GTOP_LIBS"
 
 AC_CHECK_FUNCS(strstr)
 
-AC_OUTPUT(Makefile src/Makefile)
+AC_CONFIG_FILES([Makefile src/Makefile])
+AC_OUTPUT
