@@ -52,7 +52,6 @@
 #include "flameblue.h"
 #include "flamegreen.h"
 
-#include "master.xpm"
 #include "icon.xpm"
 
 /******************************************/
@@ -62,7 +61,7 @@
 #define XMAX 56
 #define YMAX 56
 #define CMAPSIZE (XMAX * YMAX)
-#define RGBSIZE (XMAX * YMAX * 3)
+#define RGBSIZE (XMAX * YMAX * 4)
 #define NCOLOURS 256
 #define NFLAMES 4
 
@@ -84,11 +83,8 @@
 /******************************************/
 
 typedef struct {
-	Display *display;	/* X11 display */
+	GdkDisplay *display;	/* X11 display */
 	GdkWindow *win;		/* Main window */
-	GdkGC *gc;		/* Drawing GC */
-	GdkPixmap *pixmap;	/* Main pixmap */
-	GdkBitmap *mask;	/* Dockapp mask */
 
 	int x;			/* Window X position */
 	int y;			/* Window Y position */
@@ -195,7 +191,6 @@ main(int argc, char **argv)
 				switch (event->type) {
 				case GDK_DESTROY:
 				case GDK_DELETE:
-					gdk_cursor_destroy(cursor);
 					exit(0);
 					break;
 				case GDK_BUTTON_PRESS:
@@ -270,7 +265,39 @@ main(int argc, char **argv)
 		usleep(REFRESH);
 
 		/* Draw the rgb buffer to screen */
-		gdk_draw_rgb_image(bm.win, bm.gc, 4, 4, XMAX, YMAX, GDK_RGB_DITHER_NONE, bm.rgb, XMAX * 3);
+		int stride;
+		int format = CAIRO_FORMAT_RGB24;
+
+		/* Copy bm.rgb into a new buffer for Cairo to use */
+		unsigned char data[RGBSIZE] = {0};
+		memcpy(data,bm.rgb,sizeof(unsigned char) * RGBSIZE);
+
+		/* Initialize Cairo drawing */
+		cairo_rectangle_int_t cairo_rec = {0, 0, 64, 64};
+		cairo_region_t * cairo_region = cairo_region_create_rectangle (&cairo_rec);
+		GdkDrawingContext * gdk_drawing_context = gdk_window_begin_draw_frame (bm.win,cairo_region);
+		cairo_t *cr = gdk_drawing_context_get_cairo_context (gdk_drawing_context);
+
+		/* Create white rectangle to draw behind flame as border */
+		cairo_set_line_width (cr, 0.01);
+		cairo_set_source_rgb (cr, 255, 255, 255);
+		cairo_rectangle (cr, 0, 0, 1, 1);
+		cairo_stroke (cr);
+		cairo_paint (cr);
+
+		/* Load pixel map into Cairo surface to draw */
+		cairo_surface_t *surface;
+		stride = cairo_format_stride_for_width (format, XMAX);
+		surface = cairo_image_surface_create_for_data(data, format, XMAX, YMAX, stride );
+		cairo_set_source_surface( cr, surface, 0, 0 );
+		cairo_paint( cr );
+
+		/* Tell Cairo we're done drawing */
+		gdk_window_end_draw_frame(bm.win, gdk_drawing_context);
+
+		/* Clean up Cairo structures */
+		cairo_region_destroy(cairo_region);
+		cairo_surface_destroy( surface );
 	}
 	return 0;
 }
@@ -472,21 +499,27 @@ change_flame(int which)
 static GdkCursor *
 setup_cursor(void)
 {
-	GdkPixmap *source, *mask;
-	GdkColor col = { 0, 0, 0, 0 };
+	GdkDisplay* display = gdk_display_get_default();
 	GdkCursor *cursor;
-	unsigned char hide[] = { 0x00 };
+	cairo_surface_t *s;
+	cairo_t *cr;
+	GdkPixbuf *pixbuf;
 
-	/* No obviously invisible cursor available though */
-	/* X/GDK, so using a custom 1x1 bitmap instead    */
+	s = cairo_image_surface_create (CAIRO_FORMAT_A1, 1, 1);
+	cr = cairo_create (s);
+	cairo_arc (cr, 1.5, 1.5, 1.5, 0, 2 * M_PI);
+	cairo_fill (cr);
+	cairo_destroy (cr);
 
-	source = gdk_bitmap_create_from_data(NULL, hide, 1, 1);
-	mask = gdk_bitmap_create_from_data(NULL, hide, 1, 1);
+	pixbuf = gdk_pixbuf_get_from_surface (s,
+					      0, 0,
+					      1, 1);
 
-	cursor = gdk_cursor_new_from_pixmap(source, mask, &col, &col, 0, 0);
+	cairo_surface_destroy (s);
 
-	gdk_pixmap_unref(source);
-	gdk_pixmap_unref(mask);
+	cursor = gdk_cursor_new_from_pixbuf (display, pixbuf, 0, 0);
+
+	g_object_unref (pixbuf);
 
 	return cursor;
 }
@@ -524,7 +557,10 @@ draw_fire(unsigned int load)
 
 	/* Mouse in window */
 	if (proximity) {
-		gdk_window_get_pointer(bm.win, &x, &y, NULL);
+		GdkDisplay* display = gdk_display_get_default();
+		GdkSeat* seat = gdk_display_get_default_seat(display);
+		GdkDevice* pointer = gdk_seat_get_pointer(seat);
+		gdk_window_get_device_position (bm.win, pointer, &x, &y, NULL);
 
 		/* Burn spot at mouse position */
 		if ((y > 1 && y < 53) && (x > 1 && x < 53))
@@ -582,8 +618,10 @@ draw_fire(unsigned int load)
 	}
 
 	/* Convert colourmap to rgb */
+	/* Use i * 4 to index &bm.rgb instead of i * 3 so that the upper 8 bits of the 32 bits
+	 * passed to cairo_image_surface_create_for_data() are unused as required by CAIRO_FORMAT_RGB24*/
 	for (i = 0; i < (CMAPSIZE - XMAX); i++)
-		memcpy(&bm.rgb[i * 3], &bm.flame[bm.cmap[i] * 3], 3);
+		memcpy(&bm.rgb[i * 4], &bm.flame[bm.cmap[i] * 3], 3);
 }
 
 /******************************************/
@@ -598,7 +636,7 @@ make_wmfire_dockapp(void)
 	GdkWindowAttr attr;
 	Window win;
 
-	GdkPixmap *icon;
+	GdkPixbuf *icon;
 
 	XSizeHints sizehints;
 	XWMHints wmhints;
@@ -610,8 +648,7 @@ make_wmfire_dockapp(void)
 	attr.title = resource_name;
 	attr.event_mask = MASK;
 	attr.wclass = GDK_INPUT_OUTPUT;
-	attr.visual = gdk_visual_get_system();
-	attr.colormap = gdk_colormap_get_system();
+	attr.visual = gdk_screen_get_system_visual (gdk_screen_get_default ());
 	attr.wmclass_name = resource_name;
 	attr.wmclass_class = "wmfire";
 	attr.window_type = GDK_WINDOW_TOPLEVEL;
@@ -620,13 +657,13 @@ make_wmfire_dockapp(void)
 	sizehints.width = 64;
 	sizehints.height = 64;
 
-	bm.win = gdk_window_new(NULL, &attr, GDK_WA_TITLE | GDK_WA_WMCLASS | GDK_WA_VISUAL | GDK_WA_COLORMAP);
+	bm.win = gdk_window_new(NULL, &attr, GDK_WA_TITLE | GDK_WA_WMCLASS | GDK_WA_VISUAL);
 	if (!bm.win) {
 		fprintf(stderr, "FATAL: Cannot make toplevel window\n");
 		exit(1);
 	}
 
-	win = GDK_WINDOW_XWINDOW(bm.win);
+	win = GDK_WINDOW_XID(bm.win);
 	XSetWMNormalHints(GDK_WINDOW_XDISPLAY(bm.win), win, &sizehints);
 
 	wmhints.initial_state = WithdrawnState;
@@ -636,12 +673,6 @@ make_wmfire_dockapp(void)
 	wmhints.window_group = win;
 	wmhints.flags = StateHint | IconWindowHint | IconPositionHint | WindowGroupHint;
 
-	bm.gc = gdk_gc_new(bm.win);
-
-	bm.pixmap = gdk_pixmap_create_from_xpm_d(bm.win, &(bm.mask), NULL, master_xpm);
-	gdk_window_shape_combine_mask(bm.win, bm.mask, 0, 0);
-	gdk_window_set_back_pixmap(bm.win, bm.pixmap, False);
-
 #if 0
         gdk_window_set_type_hint(bm.win, GDK_WINDOW_TYPE_HINT_DOCK);
 #else
@@ -649,7 +680,7 @@ make_wmfire_dockapp(void)
         gdk_window_set_skip_taskbar_hint(bm.win, 1);
 #endif
 
-	icon = gdk_pixmap_create_from_xpm_d(bm.win, NULL, NULL, icon_xpm);
+	icon = gdk_pixbuf_new_from_xpm_data (icon_xpm);
 
 	gdk_window_show(bm.win);
 
@@ -670,6 +701,10 @@ make_wmfire_dockapp(void)
 static void
 read_config(int argc, char **argv)
 {
+	/* Get screen geometry for 'g' */
+	GdkRectangle workarea = {0};
+	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea);
+
 	int i, j;
 
 	/* Initialise flame to default */
@@ -687,9 +722,9 @@ read_config(int argc, char **argv)
 				j = XParseGeometry(optarg, &bm.x, &bm.y, &j, &j);
 
 				if (j & XNegative)
-					bm.x = gdk_screen_width() - 64 + bm.x;
+					bm.x = workarea.width - 64 + bm.x;
 				if (j & YNegative)
-					bm.y = gdk_screen_height() - 64 + bm.y;
+					bm.y = workarea.height - 64 + bm.y;
 			}
 			break;
 		case 'y':
