@@ -51,6 +51,10 @@
 #include "flamecorona.h"
 #include "flameblue.h"
 #include "flamegreen.h"
+#include "flameorange.h"
+#include "flamedarkblue.h"
+#include "flamegreen_msb.h"
+#include "flamecorona_msb.h"
 
 #include "icon.xpm"
 
@@ -63,7 +67,7 @@
 #define CMAPSIZE (XMAX * YMAX)
 #define RGBSIZE (XMAX * YMAX * 4)
 #define NCOLOURS 256
-#define NFLAMES 4
+#define NFLAMES (sizeof fire / sizeof fire[0])
 
 #define FIRE_NONE	0
 #define FIRE_CPU	1
@@ -130,6 +134,10 @@ flame_data fire[] = {
 	{"Coronal", flamecorona},
 	{"Blue", flameblue},
 	{"Green", flamegreen},
+	{"Orange", flameorange},
+	{"Dark Blue", flamedarkblue},
+	{"MSB Green", flamegreen_msb},
+	{"MSB Corona", flamecorona_msb},
 };
 
 int monitor = FIRE_CPU;

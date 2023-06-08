@@ -5,6 +5,10 @@ wmfire_SOURCES = wmfire.c \
                  flamecorona.h \
                  flameblue.h \
                  flamegreen.h \
+                 flameorange.h \
+                 flamedarkblue.h \
+                 flamegreen_msb.h \
+                 flamecorona_msb.h \
                  icon.xpm
 if SESSION
   wmfire_SOURCES += session.h session.c
