@@ -62,8 +62,8 @@
 /* Defines                                */
 /******************************************/
 
-#define XMAX 56
-#define YMAX 56
+#define XMAX 57
+#define YMAX 57
 #define CMAPSIZE (XMAX * YMAX)
 #define RGBSIZE (XMAX * YMAX * 4)
 #define NCOLOURS 256
@@ -281,15 +281,15 @@ main(int argc, char **argv)
 		memcpy(data,bm.rgb,sizeof(unsigned char) * RGBSIZE);
 
 		/* Initialize Cairo drawing */
-		cairo_rectangle_int_t cairo_rec = {0, 0, 64, 64};
+		cairo_rectangle_int_t cairo_rec = {3, 3, 57, 57};
 		cairo_region_t * cairo_region = cairo_region_create_rectangle (&cairo_rec);
 		GdkDrawingContext * gdk_drawing_context = gdk_window_begin_draw_frame (bm.win,cairo_region);
 		cairo_t *cr = gdk_drawing_context_get_cairo_context (gdk_drawing_context);
 
-		/* Create white rectangle to draw behind flame as border */
+		/* Create gray rectangle to draw behind flame as border */
 		cairo_set_line_width (cr, 0.01);
-		cairo_set_source_rgb (cr, 255, 255, 255);
-		cairo_rectangle (cr, 0, 0, 1, 1);
+		cairo_set_source_rgb (cr, 0.75, 0.75, 0.75);
+		cairo_rectangle (cr, 1, 1, 0.1, 0.1);
 		cairo_stroke (cr);
 		cairo_paint (cr);
 
@@ -297,7 +297,7 @@ main(int argc, char **argv)
 		cairo_surface_t *surface;
 		stride = cairo_format_stride_for_width (format, XMAX);
 		surface = cairo_image_surface_create_for_data(data, format, XMAX, YMAX, stride );
-		cairo_set_source_surface( cr, surface, 0, 0 );
+		cairo_set_source_surface( cr, surface, 2, 2 );
 		cairo_paint( cr );
 
 		/* Tell Cairo we're done drawing */
