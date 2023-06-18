@@ -32,9 +32,6 @@ if test "x$session" = "xon" ; then
 
   PKG_CHECK_MODULES([SM], [sm])
   PKG_CHECK_MODULES([ICE], [ice])
-
-  CFLAGS="$CFLAGS ${SM_CFLAGS} ${ICE_CFLAGS}"
-  LDFLAGS="$LDFLAGS ${SM_LIBS} ${ICE_LIBS}"
 fi
 AM_CONDITIONAL(SESSION, test "x$session" = "xon")
 
@@ -43,9 +40,6 @@ PKG_CHECK_MODULES([GTK2],[gtk+-2.0],[
 ])
 
 PKG_CHECK_MODULES([GTOP],[libgtop-2.0])
-
-CFLAGS="$CFLAGS $GTK2_CFLAGS $GTOP_CFLAGS $XEXT_CFLAGS $X11_CFLAGS"
-LDFLAGS="$LDFLAGS $GTK2_LIBS $GTOP_LIBS $XEXT_LIBS $X11_LIBS"
 
 AC_CHECK_FUNCS([floor    \
                 memset   \

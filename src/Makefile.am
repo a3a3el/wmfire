@@ -1,18 +1,20 @@
 bin_PROGRAMS = wmfire
 
+wmfire_SOURCES = wmfire.c \
+                 flamedefault.h \
+                 flamecorona.h \
+                 flameblue.h \
+                 flamegreen.h
 if SESSION
-wmfire_SOURCES = wmfire.c \
-	session.h session.c \
-	flamedefault.h flamecorona.h flameblue.h flamegreen.h
-else
-wmfire_SOURCES = wmfire.c \
-	flamedefault.h flamecorona.h flameblue.h flamegreen.h
-endif	 
+  wmfire_SOURCES += session.h session.c
+endif
 
-wmfire_LDADD = @LDFLAGS@
+wmfire_LDADD = $(GTK2_LIBS) $(GTOP_LIBS) $(XEXT_LIBS) $(X11_LIBS)
+if SESSION
+  wmfire_LDADD += $(SM_LIBS) $(ICE_LIBS)
+endif
 
-AM_LDFLAGS = -lXext -lX11 \
-	-L/usr/X11R6/lib -L/usr/local/lib
-
-AM_CPPFLAGS = -I/usr/X11R6/include \
-	-I/usr/local/include
+AM_CFLAGS = $(GTK2_CFLAGS) $(GTOP_CFLAGS) $(XEXT_CFLAGS) $(X11_CFLAGS)
+if SESSION
+  AM_CFLAGS += $(SM_CFLAGS) $(ICE_CFLAGS)
+endif
