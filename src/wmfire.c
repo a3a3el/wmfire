@@ -7,12 +7,12 @@
 /* modify it under the terms of the GNU General Public License
 /* as published by the Free Software Foundation; either version 2
 /* of the License, or (at your option) any later version.
-/* 
+/*
 /* This program is distributed in the hope that it will be useful,
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 /* GNU General Public License for more details.
-/* 
+/*
 /* You should have received a copy of the GNU General Public License
 /* along with this program; if not, write to the Free Software
 /* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -230,7 +230,7 @@ main(int argc, char **argv)
 		/* Change monitored statistics */
 		if (next) {
 			next = 0;
-			
+
 			if (!lock) {
 				if (monitor == FIRE_CPU && change_cpu(-1))
 					monitor = FIRE_MEM;
@@ -444,7 +444,7 @@ change_cpu(int which)
 		cpu_av = 1;
 		return 1;
 	}
-	
+
 	return 0;
 }
 
@@ -661,7 +661,6 @@ make_wmfire_dockapp(void)
 	if (bm.sticky)
 		gdk_window_stick(bm.win);
 #undef MASK
-
 }
 
 /******************************************/
@@ -718,10 +717,10 @@ read_config(int argc, char **argv)
 		case 's':
 			if (optarg)
 				net_spd = atoi(optarg);
-				if (strchr(optarg, 'k') || strchr(optarg, 'K'))
-					net_spd = net_spd * 1024 / 8;
-				else if (strchr(optarg, 'm') || strchr(optarg, 'M'))
-					net_spd = net_spd * 1024 * 1024 / 8;
+			if (strchr(optarg, 'k') || strchr(optarg, 'K'))
+				net_spd = net_spd * 1024 / 8;
+			else if (strchr(optarg, 'm') || strchr(optarg, 'M'))
+				net_spd = net_spd * 1024 * 1024 / 8;
 			break;
 		case 'x':
 			cpu_nice = 0;
