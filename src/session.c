@@ -30,6 +30,7 @@
 #include <pwd.h>
 
 #include <gdk/gdk.h>
+#include <gdk/gdkx.h>
 #include <X11/SM/SMlib.h>
 
 #include "session.h"
@@ -61,10 +62,15 @@ cb_smc_shutdown_cancelled(SmcConn smc_conn, SmPointer client_data)
 {
 }
 
-static void
-cb_ice_connection_messages(IceConn ice_connection, gint source, GdkInputCondition condition)
+static int
+cb_ice_connection_messages(GIOChannel *source, GIOCondition condition,
+			   gpointer data)
 {
+	IceConn ice_connection = data;
+
 	IceProcessMessages(ice_connection, NULL, NULL);
+
+	return 1;
 }
 
 void
@@ -79,6 +85,7 @@ smc_connect(gint argc, gchar ** argv, gchar * session_id)
 	gchar error_string[256], pid_str[8], *userid_str;
 	gulong mask;
 	gint i, j;
+	GIOChannel *channel;
 
 	/* Session manager callbacks */
 	callbacks = g_new0(SmcCallbacks, 1);
@@ -98,7 +105,7 @@ smc_connect(gint argc, gchar ** argv, gchar * session_id)
 	if (!smc_connection)
 		return;
 
-	gdk_set_sm_client_id(client_id);
+	gdk_x11_set_sm_client_id(client_id);
 
 	/* Session manager properties */
 	userid.name = SmUserID;
@@ -155,6 +162,10 @@ smc_connect(gint argc, gchar ** argv, gchar * session_id)
 	g_free(restart.vals);
 
 	ice_connection = SmcGetIceConnection(smc_connection);
-	gdk_input_add(IceConnectionNumber(ice_connection), GDK_INPUT_READ,
-		      (GdkInputFunction) cb_ice_connection_messages, ice_connection);
+
+	channel = g_io_channel_unix_new (IceConnectionNumber (ice_connection));
+
+	g_io_add_watch (channel, G_IO_IN, cb_ice_connection_messages,
+			ice_connection);
+
 }
