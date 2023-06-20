@@ -1,6 +1,8 @@
 /aclocal.m4
 /autom4te.cache/
 /compile
+/config.h
+/config.h.in
 /config.log
 /config.status
 /configure
@@ -13,3 +15,4 @@ Makefile.in
 *.o
 /src/.deps/
 /src/wmfire
+/stamp-h1

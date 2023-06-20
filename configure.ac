@@ -1,5 +1,6 @@
 AC_INIT([wmfire], [1.2.4])
 AC_CONFIG_SRCDIR([src/wmfire.c])
+AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 
 AC_PROG_AWK
@@ -27,7 +28,7 @@ AC_ARG_ENABLE(session,
        session=on, session=off)
 
 if test "x$session" = "xon" ; then
-  AC_DEFINE(SESSION)
+  AC_DEFINE([SESSION], [], [Compile with session management])
 
   PKG_CHECK_MODULES([SM], [sm])
   PKG_CHECK_MODULES([ICE], [ice])
