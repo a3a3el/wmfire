@@ -41,7 +41,15 @@ PKG_CHECK_MODULES([GTOP],[libgtop-2.0])
 CFLAGS="$CFLAGS $GTK2_CFLAGS $GTOP_CFLAGS"
 LDFLAGS="$LDFLAGS $GTK2_LIBS $GTOP_LIBS"
 
-AC_CHECK_FUNCS(strstr)
+AC_CHECK_FUNCS([floor    \
+                memset   \
+                strchr   \
+                strdup   \
+                strerror \
+                strstr])
+
+AC_TYPE_SIZE_T
+AC_TYPE_UINT64_T
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
