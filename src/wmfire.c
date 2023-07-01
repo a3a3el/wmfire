@@ -108,16 +108,16 @@ typedef struct {
 /* Functions                              */
 /******************************************/
 
-static int update_cpu();
-static int update_mem();
-static int update_net();
-static int update_file();
+static int update_cpu(void);
+static int update_mem(void);
+static int update_net(void);
+static int update_file(void);
 static int change_cpu(int);
 static void change_flame(int);
-static GdkCursor *setup_cursor();
+static GdkCursor *setup_cursor(void);
 static void burn_spot(int, int, int);
 static void draw_fire(unsigned int);
-static void make_wmfire_dockapp();
+static void make_wmfire_dockapp(void);
 static void read_config(int, char **);
 static void do_help(void);
 
@@ -280,7 +280,7 @@ main(int argc, char **argv)
 /******************************************/
 
 static int
-update_cpu()
+update_cpu(void)
 {
 	glibtop_cpu cpu;
 	unsigned long load, total;
@@ -321,7 +321,7 @@ update_cpu()
 /******************************************/
 
 static int
-update_mem()
+update_mem(void)
 {
 	glibtop_mem mem;
 	int percent;
@@ -362,7 +362,7 @@ getsysctl(const char *name, void *ptr, size_t len)
 #endif
 
 static int
-update_net()
+update_net(void)
 {
 	int percent;
 
@@ -396,7 +396,7 @@ update_net()
 /******************************************/
 
 static int
-update_file()
+update_file(void)
 {
 	char buf[128];
 	float percent, number;
@@ -470,7 +470,7 @@ change_flame(int which)
 /******************************************/
 
 static GdkCursor *
-setup_cursor()
+setup_cursor(void)
 {
 	GdkPixmap *source, *mask;
 	GdkColor col = { 0, 0, 0, 0 };
