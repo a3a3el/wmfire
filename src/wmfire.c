@@ -48,13 +48,13 @@
 
 #include "session.h"
 #include "flamedefault.h"
-#include "flamecorona.h"
+#include "flamecorona_blue.h"
+#include "flamecorona_red.h"
 #include "flameblue.h"
-#include "flamegreen.h"
-#include "flameorange.h"
 #include "flamedarkblue.h"
-#include "flamegreen_msb.h"
-#include "flamecorona_msb.h"
+#include "flamegreen1.h"
+#include "flamegreen2.h"
+#include "flameorange.h"
 
 #include "icon.xpm"
 
@@ -131,13 +131,13 @@ char *session_id = NULL;
 
 flame_data fire[] = {
 	{"Natural", flamedefault},
-	{"Coronal", flamecorona},
+	{"Blue Corona", flamecorona_blue},
+	{"Red Corona", flamecorona_red},
 	{"Blue", flameblue},
-	{"Green", flamegreen},
-	{"Orange", flameorange},
 	{"Dark Blue", flamedarkblue},
-	{"MSB Green", flamegreen_msb},
-	{"MSB Corona", flamecorona_msb},
+	{"Green 1", flamegreen1},
+	{"Green 2", flamegreen2},
+	{"Orange", flameorange},
 };
 
 int monitor = FIRE_CPU;

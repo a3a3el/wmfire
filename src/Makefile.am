@@ -2,13 +2,13 @@ bin_PROGRAMS = wmfire
 
 wmfire_SOURCES = wmfire.c \
                  flamedefault.h \
-                 flamecorona.h \
+                 flamecorona_blue.h \
+                 flamecorona_red.h \
                  flameblue.h \
-                 flamegreen.h \
-                 flameorange.h \
                  flamedarkblue.h \
-                 flamegreen_msb.h \
-                 flamecorona_msb.h \
+                 flamegreen1.h \
+                 flamegreen2.h \
+                 flameorange.h \
                  icon.xpm
 if SESSION
   wmfire_SOURCES += session.h session.c
