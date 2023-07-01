@@ -16,3 +16,4 @@ Makefile.in
 /src/.deps/
 /src/wmfire
 /stamp-h1
+/wmfire-*.tar.gz
