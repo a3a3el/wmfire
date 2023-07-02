@@ -1,3 +1,3 @@
 SUBDIRS = src
 
-man_MANS = wmfire.1
+dist_man_MANS = wmfire.1
