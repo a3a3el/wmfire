@@ -32,9 +32,6 @@ written by timecop over at http://www.ne.jp/asahi/linux/timecop/ which has
 swimming fish, an anti-aliased analog clock, and alpha blended bubbles.
 Using this is much faster than the historic wmgeneral source.
 
-Like wmfishtime, this program is afflicted by the broken window manager
-problem. So if you get a grey box use the "-b" option.
-
 If you discover any bugs then please report them to me at
 <swanson@ukfsn.org> where I'd be happy to answer any questions.
 
