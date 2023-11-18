@@ -35,9 +35,7 @@ if test "x$session" = "xon" ; then
 fi
 AM_CONDITIONAL(SESSION, test "x$session" = "xon")
 
-PKG_CHECK_MODULES([GTK3],[gtk+-3.0],[
-  GTK3_LIBS=`echo "$GTK3_LIBS" | sed -e "s/-latk-1.0//"`
-])
+PKG_CHECK_MODULES([GTK3],[gtk+-3.0])
 
 PKG_CHECK_MODULES([GTOP],[libgtop-2.0])
 
